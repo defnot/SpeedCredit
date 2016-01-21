@@ -19,10 +19,10 @@ public class Task extends Model {
 
     @ManyToOne
     public User assignedTo;
+    public String folder;
     @ManyToOne
     public Project project;
 
-    public String folder;
 
     public static Model.Finder<Long, Task> find = new Model.Finder(Long.class, Task.class);
 

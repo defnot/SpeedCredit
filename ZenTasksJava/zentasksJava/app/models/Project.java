@@ -1,12 +1,8 @@
 package models;
 
-import play.db.ebean.Model;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import javax.persistence.*;
+import play.db.ebean.*;
 
 /**
  * Created by Dany on 1/18/2016.
