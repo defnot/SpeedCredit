@@ -7,6 +7,7 @@ import play.db.ebean.*;
 /**
  * Created by Dany on 1/18/2016.
  */
+@Entity
 public class Project extends Model {
     @Id
     public Long id;
