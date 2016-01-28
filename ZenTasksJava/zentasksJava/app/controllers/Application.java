@@ -1,13 +1,17 @@
 package controllers;
 
 import models.Project;
+import models.Session;
 import models.Task;
 import models.User;
+import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.login;
+
+import java.util.Date;
 
 import static play.data.Form.form;
 
@@ -50,7 +54,17 @@ public class Application extends Controller {
         else {
             session().clear();
             session("email", loginForm.get().email);
+            User user = User.find.byId(loginForm.get().email);
+            Session session = new Session();
+            session.userEmail = user.email;
+            session.startTime = new Date().getTime();
+            session.endTime = new Date().getTime() + Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
+            session.isValid = true;
+            session.token = "asdfasdfdasfasdf";
+
             return redirect("/");
         }
     }
+
+
 }

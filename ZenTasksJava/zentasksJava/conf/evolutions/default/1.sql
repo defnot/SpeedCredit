@@ -10,6 +10,16 @@ create table project (
   constraint pk_project primary key (id))
 ;
 
+create table session (
+  id                        bigint not null,
+  user_email                varchar(255),
+  token                     varchar(255),
+  start_time                bigint,
+  end_time                  bigint,
+  is_valid                  boolean,
+  constraint pk_session primary key (id))
+;
+
 create table task (
   id                        bigint not null,
   title                     varchar(255),
@@ -36,14 +46,18 @@ create table project_user (
 ;
 create sequence project_seq;
 
+create sequence session_seq;
+
 create sequence task_seq;
 
 create sequence user_seq;
 
-alter table task add constraint fk_task_assignedTo_1 foreign key (assigned_to_email) references user (email) on delete restrict on update restrict;
-create index ix_task_assignedTo_1 on task (assigned_to_email);
-alter table task add constraint fk_task_project_2 foreign key (project_id) references project (id) on delete restrict on update restrict;
-create index ix_task_project_2 on task (project_id);
+alter table session add constraint fk_session_user_1 foreign key (user_email) references user (email) on delete restrict on update restrict;
+create index ix_session_user_1 on session (user_email);
+alter table task add constraint fk_task_assignedTo_2 foreign key (assigned_to_email) references user (email) on delete restrict on update restrict;
+create index ix_task_assignedTo_2 on task (assigned_to_email);
+alter table task add constraint fk_task_project_3 foreign key (project_id) references project (id) on delete restrict on update restrict;
+create index ix_task_project_3 on task (project_id);
 
 
 
@@ -59,6 +73,8 @@ drop table if exists project;
 
 drop table if exists project_user;
 
+drop table if exists session;
+
 drop table if exists task;
 
 drop table if exists user;
@@ -66,6 +82,8 @@ drop table if exists user;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 drop sequence if exists project_seq;
+
+drop sequence if exists session_seq;
 
 drop sequence if exists task_seq;
 

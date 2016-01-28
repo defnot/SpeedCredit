@@ -19,8 +19,8 @@ public class Secured extends Security.Authenticator {
         String previousTick = session("userTime");
         if(previousTick != null && !previousTick.equals("")) {
             long previousT = Long.valueOf(previousTick);
-            long currentT = Long.valueOf(new Date().getTime());
-            long timeOut = Long.valueOf(Play.application().configuration().getString("sessionTimeout")) * 1000 * 60;
+            long currentT = new Date().getTime();
+            long timeOut = Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
             if ((currentT - previousT) > timeOut) {
                 session().clear();
                 return null;
