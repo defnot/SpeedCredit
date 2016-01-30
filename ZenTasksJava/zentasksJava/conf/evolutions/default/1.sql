@@ -52,12 +52,10 @@ create sequence task_seq;
 
 create sequence user_seq;
 
-alter table session add constraint fk_session_user_1 foreign key (user_email) references user (email) on delete restrict on update restrict;
-create index ix_session_user_1 on session (user_email);
-alter table task add constraint fk_task_assignedTo_2 foreign key (assigned_to_email) references user (email) on delete restrict on update restrict;
-create index ix_task_assignedTo_2 on task (assigned_to_email);
-alter table task add constraint fk_task_project_3 foreign key (project_id) references project (id) on delete restrict on update restrict;
-create index ix_task_project_3 on task (project_id);
+alter table task add constraint fk_task_assignedTo_1 foreign key (assigned_to_email) references user (email) on delete restrict on update restrict;
+create index ix_task_assignedTo_1 on task (assigned_to_email);
+alter table task add constraint fk_task_project_2 foreign key (project_id) references project (id) on delete restrict on update restrict;
+create index ix_task_project_2 on task (project_id);
 
 
 

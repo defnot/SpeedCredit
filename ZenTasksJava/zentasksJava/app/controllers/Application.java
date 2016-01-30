@@ -5,7 +5,6 @@ import models.Session;
 import models.Task;
 import models.User;
 import play.Play;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -47,21 +46,21 @@ public class Application extends Controller {
         }
     }
     public static Result authenticate() {
-        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        play.data.Form<Login> loginForm = form(Login.class).bindFromRequest();
         if(loginForm.hasErrors()) {
             return badRequest(login.render(loginForm));
         }
         else {
             session().clear();
             session("email", loginForm.get().email);
-            User user = User.find.byId(loginForm.get().email);
-            Session session = new Session();
-            session.userEmail = user.email;
-            session.startTime = new Date().getTime();
-            session.endTime = new Date().getTime() + Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
-            session.isValid = true;
-            session.token = "asdfasdfdasfasdf";
-
+            User userToSave = User.find.byId(loginForm.get().email);
+            String userEmail = userToSave.email;
+            Long startTime = new Date().getTime();
+            Long endTime = new Date().getTime() + Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
+            Boolean isValid = true;
+            String token = "asdfasdfdasfasdf";
+            User user = userToSave;
+            Session.create(userEmail,token,startTime,endTime,isValid);
             return redirect("/");
         }
     }

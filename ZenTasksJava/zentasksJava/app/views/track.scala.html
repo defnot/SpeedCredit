@@ -1,0 +1,11 @@
+@(sessions: List[Session])
+@main("Welcome to play") {
+    <table>
+        @for(s <- sessions) {
+            <td>@s.userEmail</td>
+            <td>@s.startTime</td>
+            <td>@s.endTime</td>
+            <td>@s.token</td>
+        }
+    </table>
+}

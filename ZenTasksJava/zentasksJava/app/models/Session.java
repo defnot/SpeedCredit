@@ -12,18 +12,27 @@ import java.util.List;
 @Entity
 public class Session extends Model {
     @Id
-    public Long Id;
+    public Long id;
     public String userEmail;
     public String token;
     public Long startTime;
     public Long endTime;
     public Boolean isValid;
 
-    @ManyToOne
-    User user;
 
-    public static Finder<String, Session> find = new Finder<String,Session>(String.class, Session.class);
+    public Session (String userEmail, String token, Long startTime, Long endTime, Boolean isValid) {
+        this.userEmail = userEmail;
+        this.token = token;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isValid = true;
+    }
+    public static Model.Finder<String, Session> find = new Model.Finder(String.class, Session.class);
 
-
+    public static Session create(String userEmail, String token, Long startTime, Long endTime, Boolean isValid) {
+        Session session = new Session(userEmail,token,startTime,endTime,isValid);
+        session.save();
+        return session;
+    }
 
 }
