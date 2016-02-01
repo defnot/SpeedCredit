@@ -10,9 +10,13 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.login;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import static play.data.Form.form;
 
@@ -21,6 +25,8 @@ import static play.data.Form.form;
  */
 public class Application extends Controller {
     public static long sessionId;
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static Random rnd = new Random();
     @Security.Authenticated(Secured.class)
     public static Result Index() {
         return ok(views.html.index.render(Project.find.all(), Task.find.all()));
@@ -53,7 +59,7 @@ public class Application extends Controller {
             return null;
         }
     }
-    public static Result authenticate() {
+    public static Result authenticate() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         play.data.Form<Login> loginForm = form(Login.class).bindFromRequest();
         if(loginForm.hasErrors()) {
             return badRequest(login.render(loginForm));
@@ -65,13 +71,33 @@ public class Application extends Controller {
             String userEmail = userToSave.email;
             LocalDateTime startDate = LocalDateTime.now();
             Boolean isValid = true;
-            String token = "asdfasdfdasfasdf";
+            String token = makeSHA1Hash(randomString(12));
             User user = userToSave;
             sessionId++;
             Session.create(sessionId,userEmail,token,startDate.toString(),"",isValid,userEmail);
             return redirect("/");
         }
     }
+    public static String makeSHA1Hash(String input)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        md.reset();
+        byte[] buffer = input.getBytes("UTF-8");
+        md.update(buffer);
+        byte[] digest = md.digest();
 
+        String hexStr = "";
+        for (int i = 0; i < digest.length; i++) {
+            hexStr +=  Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring( 1 );
+        }
+        return hexStr;
+    }
+
+    public static String randomString( int len ){
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+        return sb.toString();
+    }
 
 }
