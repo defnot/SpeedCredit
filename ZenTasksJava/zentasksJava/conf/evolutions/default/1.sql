@@ -14,8 +14,8 @@ create table session (
   id                        bigint not null,
   user_email                varchar(255),
   token                     varchar(255),
-  start_time                bigint,
-  end_time                  bigint,
+  start_time                varchar(255),
+  end_time                  varchar(255),
   is_valid                  boolean,
   constraint pk_session primary key (id))
 ;
@@ -44,6 +44,12 @@ create table project_user (
   user_email                     varchar(255) not null,
   constraint pk_project_user primary key (project_id, user_email))
 ;
+
+create table session_user (
+  session_id                     bigint not null,
+  user_email                     varchar(255) not null,
+  constraint pk_session_user primary key (session_id, user_email))
+;
 create sequence project_seq;
 
 create sequence session_seq;
@@ -63,6 +69,10 @@ alter table project_user add constraint fk_project_user_project_01 foreign key (
 
 alter table project_user add constraint fk_project_user_user_02 foreign key (user_email) references user (email) on delete restrict on update restrict;
 
+alter table session_user add constraint fk_session_user_session_01 foreign key (session_id) references session (id) on delete restrict on update restrict;
+
+alter table session_user add constraint fk_session_user_user_02 foreign key (user_email) references user (email) on delete restrict on update restrict;
+
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
@@ -72,6 +82,8 @@ drop table if exists project;
 drop table if exists project_user;
 
 drop table if exists session;
+
+drop table if exists session_user;
 
 drop table if exists task;
 

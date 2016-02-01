@@ -1,11 +1,29 @@
 @(sessions: List[Session])
 @main("Welcome to play") {
     <table>
+        <tr>
+            <th>User Email</th>
+            <th>User Start Time</th>
+            <th>User End Time</th>
+            <th>Valid</th>
+            <th>Token</th>
+        </tr>
         @for(s <- sessions) {
-            <td>@s.userEmail</td>
-            <td>@s.startTime</td>
-            <td>@s.endTime</td>
-            <td>@s.token</td>
+            <tr>
+                <td>@s.userEmail</td>
+                <td>@s.startTime</td>
+                @if(s.endTime.equals("")) {
+                    <td>null</td>
+                } else {
+                    <td>@s.endTime</td>
+                }
+                @if(s.isValid == true) {
+                    <td>true</td>
+                } else {
+                    <td>false</td>
+                }
+                <td>@s.token</td>
+            </tr>
         }
     </table>
 }

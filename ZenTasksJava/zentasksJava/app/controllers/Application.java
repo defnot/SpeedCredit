@@ -10,6 +10,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.login;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static play.data.Form.form;
@@ -18,6 +20,7 @@ import static play.data.Form.form;
  * Created by Dany on 1/25/2016.
  */
 public class Application extends Controller {
+    public static long sessionId;
     @Security.Authenticated(Secured.class)
     public static Result Index() {
         return ok(views.html.index.render(Project.find.all(), Task.find.all()));
@@ -27,7 +30,12 @@ public class Application extends Controller {
         return ok(views.html.login.render(form(Login.class)));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result logout() {
+        Session currentSession = Session.find.where().eq("id",sessionId).findUnique();
+        currentSession.endTime = LocalDateTime.now().toString();
+        currentSession.isValid = false;
+        currentSession.save();
         session().clear();
         flash("success", "You have been logged out");
         return redirect("/login");
@@ -55,12 +63,12 @@ public class Application extends Controller {
             session("email", loginForm.get().email);
             User userToSave = User.find.byId(loginForm.get().email);
             String userEmail = userToSave.email;
-            Long startTime = new Date().getTime();
-            Long endTime = new Date().getTime() + Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
+            LocalDateTime startDate = LocalDateTime.now();
             Boolean isValid = true;
             String token = "asdfasdfdasfasdf";
             User user = userToSave;
-            Session.create(userEmail,token,startTime,endTime,isValid);
+            sessionId++;
+            Session.create(sessionId,userEmail,token,startDate.toString(),"",isValid,userEmail);
             return redirect("/");
         }
     }

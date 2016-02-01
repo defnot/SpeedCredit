@@ -1,11 +1,13 @@
 package controllers;
 
+import models.Session;
 import play.*;
 import play.mvc.*;
 import play.mvc.Http.*;
 
 import models.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static play.mvc.Controller.session;
@@ -22,6 +24,11 @@ public class Secured extends Security.Authenticator {
             long currentT = new Date().getTime();
             long timeOut = Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
             if ((currentT - previousT) > timeOut) {
+                long sessionId = Application.sessionId;
+                Session currentSession = Session.find.where().eq("id",sessionId).findUnique();
+                currentSession.endTime = LocalDateTime.now().toString();
+                currentSession.isValid = false;
+                currentSession.save();
                 session().clear();
                 return null;
             }
