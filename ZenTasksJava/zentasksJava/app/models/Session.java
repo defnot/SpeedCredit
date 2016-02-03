@@ -1,6 +1,7 @@
 package models;
 
 import play.db.ebean.Model;
+import scala.collection.Seq;
 
 import javax.persistence.*;
 import java.util.ArrayList;

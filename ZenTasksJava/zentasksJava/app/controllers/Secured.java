@@ -18,21 +18,23 @@ import static play.mvc.Controller.session;
 public class Secured extends Security.Authenticator {
     @Override
     public String getUsername(Context ctx) {
-        String previousTick = session("userTime");
-        if(previousTick != null && !previousTick.equals("")) {
-            long previousT = Long.valueOf(previousTick);
-            long currentT = new Date().getTime();
-            long timeOut = Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
-            if ((currentT - previousT) > timeOut) {
-                long sessionId = Application.sessionId;
-                Session currentSession = Session.find.where().eq("id",sessionId).findUnique();
-                currentSession.endTime = LocalDateTime.now().toString();
-                currentSession.isValid = false;
-                currentSession.save();
-                session().clear();
-                return null;
-            }
-        }
+       String previousTick = session("userTime");
+       if(previousTick != null && !previousTick.equals("")) {
+           long previousT = Long.valueOf(previousTick);
+           long currentT = new Date().getTime();
+           long timeOut = Play.application().configuration().getLong("sessionTimeout") * 1000 * 60;
+           if ((currentT - previousT) > timeOut) {
+               long sessionId = Application.sessionId;
+               Session currentSession = Session.find.where().eq("id",sessionId).findUnique();
+               if(currentSession != null) {
+                   currentSession.endTime = LocalDateTime.now().toString();
+                   currentSession.isValid = false;
+                   currentSession.save();
+                   session().clear();
+               }
+               return null;
+           }
+       }
 
         String time = Long.toString(new Date().getTime());
             session("userTime",time);

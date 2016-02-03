@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Session;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -11,6 +12,6 @@ import play.mvc.Security;
 public class SessionTracking extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result track() {
-        return ok(views.html.track.render(Session.find.all()));
+        return ok(Json.toJson(Session.find.all()));
     }
 }
